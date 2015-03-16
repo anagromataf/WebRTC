@@ -80,6 +80,10 @@
 - (void)createOfferWithDelegate:(id<RTCSessionDescriptionDelegate>)delegate
                     constraints:(RTCMediaConstraints *)constraints;
 
+- (void)createOfferWithConstraints:(RTCMediaConstraints *)constraints
+                        completion:(void(^)(RTCSessionDescription *sessionDescription, NSError *error))completion;
+
+
 // Create an answer to an offer.
 // Success or failure will be reported via RTCSessionDescriptionDelegate.
 - (void)createAnswerWithDelegate:(id<RTCSessionDescriptionDelegate>)delegate

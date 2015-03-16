@@ -87,6 +87,33 @@ class RTCCreateSessionDescriptionObserver
   RTCPeerConnection* _peerConnection;
 };
 
+class RTCCreateSessionDescriptionCompletionHandler
+    : public CreateSessionDescriptionObserver {
+ public:
+  RTCCreateSessionDescriptionCompletionHandler(
+      void(^completion)(RTCSessionDescription *sessionDescription, NSError *error)) {
+    _completion = completion;
+  }
+
+  void OnSuccess(SessionDescriptionInterface* desc) override {
+    RTCSessionDescription* session =
+        [[RTCSessionDescription alloc] initWithSessionDescription:desc];
+    _completion(session, nil);
+  }
+
+  void OnFailure(const std::string& error) override {
+    NSString* str = @(error.c_str());
+    NSError* err =
+        [NSError errorWithDomain:kRTCSessionDescriptionDelegateErrorDomain
+                            code:kRTCSessionDescriptionDelegateErrorCode
+                        userInfo:@{@"error" : str}];
+    _completion(nil, err);
+  }
+
+ private:
+  void(^_completion)(RTCSessionDescription *sessionDescription, NSError *error);
+};
+
 class RTCSetSessionDescriptionObserver : public SetSessionDescriptionObserver {
  public:
   RTCSetSessionDescriptionObserver(id<RTCSessionDescriptionDelegate> delegate,
@@ -183,6 +210,15 @@ class RTCStatsObserver : public StatsObserver {
       observer(new rtc::RefCountedObject<
           webrtc::RTCCreateSessionDescriptionObserver>(delegate, self));
   self.peerConnection->CreateOffer(observer, constraints.constraints);
+}
+
+- (void)createOfferWithConstraints:(RTCMediaConstraints *)constraints
+                        completion:(void(^)(RTCSessionDescription *sessionDescription, NSError *error))completion
+{
+    rtc::scoped_refptr<webrtc::RTCCreateSessionDescriptionCompletionHandler>
+            observer(new rtc::RefCountedObject<
+                webrtc::RTCCreateSessionDescriptionCompletionHandler>(completion));
+    self.peerConnection->CreateOffer(observer, constraints.constraints);
 }
 
 - (void)removeStream:(RTCMediaStream*)stream {

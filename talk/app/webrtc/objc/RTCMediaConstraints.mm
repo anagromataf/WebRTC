@@ -55,6 +55,16 @@
   return self;
 }
 
+- (NSArray *)mandatory
+{
+    return [[self class] arrayFromConstraints:_constraints->GetMandatory()];
+}
+
+- (NSArray *)optional
+{
+    return [[self class] arrayFromConstraints:_constraints->GetOptional()];
+}
+
 + (webrtc::MediaConstraintsInterface::Constraints)constraintsFromArray:
                                                       (NSArray*)array {
   webrtc::MediaConstraintsInterface::Constraints constraints;
@@ -63,6 +73,18 @@
         [pair.key UTF8String], [pair.value UTF8String]));
   }
   return constraints;
+}
+
++ (NSArray *)arrayFromConstraints:(webrtc::MediaConstraintsInterface::Constraints)constraints
+{
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    for (webrtc::MediaConstraintsInterface::Constraints::iterator it = constraints.begin();
+         it != constraints.end(); it++) {
+        NSString *key = [[NSString alloc] initWithUTF8String:it->key.c_str()];
+        NSString *value = [[NSString alloc] initWithUTF8String:it->value.c_str()];
+        [result addObject:[[RTCPair alloc] initWithKey:key value:value]];
+    }
+    return result;
 }
 
 @end

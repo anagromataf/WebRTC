@@ -36,4 +36,7 @@
 - (id)initWithMandatoryConstraints:(NSArray *)mandatory
                optionalConstraints:(NSArray *)optional;
 
+@property (nonatomic, readonly) NSArray *mandatory;
+@property (nonatomic, readonly) NSArray *optional;
+
 @end

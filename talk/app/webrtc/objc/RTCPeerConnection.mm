@@ -142,6 +142,29 @@ class RTCSetSessionDescriptionObserver : public SetSessionDescriptionObserver {
   RTCPeerConnection* _peerConnection;
 };
 
+class RTCSetSessionDescriptionCompletionHandler : public SetSessionDescriptionObserver {
+ public:
+  RTCSetSessionDescriptionCompletionHandler(void(^completion)(NSError *error)) {
+      _completion = completion;
+  }
+
+  void OnSuccess() override {
+      _completion(nil);
+  }
+
+  void OnFailure(const std::string& error) override {
+    NSString* str = @(error.c_str());
+    NSError* err =
+        [NSError errorWithDomain:kRTCSessionDescriptionDelegateErrorDomain
+                            code:kRTCSessionDescriptionDelegateErrorCode
+                        userInfo:@{@"error" : str}];
+    _completion(err);
+  }
+
+ private:
+   void(^_completion)(NSError *error);
+};
+
 class RTCStatsObserver : public StatsObserver {
  public:
   RTCStatsObserver(id<RTCStatsDelegate> delegate,
@@ -204,6 +227,15 @@ class RTCStatsObserver : public StatsObserver {
   self.peerConnection->CreateAnswer(observer, constraints.constraints);
 }
 
+- (void)createAnswerWithConstraints:(RTCMediaConstraints *)constraints
+                         completion:(void(^)(RTCSessionDescription *sessionDescription, NSError *error))completion
+{
+    rtc::scoped_refptr<webrtc::RTCCreateSessionDescriptionCompletionHandler>
+            observer(new rtc::RefCountedObject<
+                webrtc::RTCCreateSessionDescriptionCompletionHandler>(completion));
+    self.peerConnection->CreateAnswer(observer, constraints.constraints);
+}
+
 - (void)createOfferWithDelegate:(id<RTCSessionDescriptionDelegate>)delegate
                     constraints:(RTCMediaConstraints*)constraints {
   rtc::scoped_refptr<webrtc::RTCCreateSessionDescriptionObserver>
@@ -235,6 +267,14 @@ class RTCStatsObserver : public StatsObserver {
   self.peerConnection->SetLocalDescription(observer, sdp.sessionDescription);
 }
 
+- (void)setLocalSessionDescription:(RTCSessionDescription *)sdp
+                        completion:(void(^)(NSError *error))completion
+{
+    rtc::scoped_refptr<webrtc::RTCSetSessionDescriptionCompletionHandler> observer(
+            new rtc::RefCountedObject<webrtc::RTCSetSessionDescriptionCompletionHandler>(completion));
+    self.peerConnection->SetLocalDescription(observer, sdp.sessionDescription);
+}
+
 - (void)setRemoteDescriptionWithDelegate:
             (id<RTCSessionDescriptionDelegate>)delegate
                       sessionDescription:(RTCSessionDescription*)sdp {
@@ -242,6 +282,14 @@ class RTCStatsObserver : public StatsObserver {
       new rtc::RefCountedObject<webrtc::RTCSetSessionDescriptionObserver>(
           delegate, self));
   self.peerConnection->SetRemoteDescription(observer, sdp.sessionDescription);
+}
+
+- (void)setRemoteSessionDescription:(RTCSessionDescription *)sdp
+                         completion:(void(^)(NSError *error))completion
+{
+    rtc::scoped_refptr<webrtc::RTCSetSessionDescriptionCompletionHandler> observer(
+            new rtc::RefCountedObject<webrtc::RTCSetSessionDescriptionCompletionHandler>(completion));
+    self.peerConnection->SetRemoteDescription(observer, sdp.sessionDescription);
 }
 
 - (BOOL)updateICEServers:(NSArray*)servers

@@ -89,17 +89,27 @@
 - (void)createAnswerWithDelegate:(id<RTCSessionDescriptionDelegate>)delegate
                      constraints:(RTCMediaConstraints *)constraints;
 
+- (void)createAnswerWithConstraints:(RTCMediaConstraints *)constraints
+                         completion:(void(^)(RTCSessionDescription *sessionDescription, NSError *error))completion;
+
+
 // Sets the local session description.
 // Success or failure will be reported via RTCSessionDescriptionDelegate.
 - (void)
     setLocalDescriptionWithDelegate:(id<RTCSessionDescriptionDelegate>)delegate
                  sessionDescription:(RTCSessionDescription *)sdp;
 
+- (void)setLocalSessionDescription:(RTCSessionDescription *)sdp
+                        completion:(void(^)(NSError *error))completion;
+
 // Sets the remote session description.
 // Success or failure will be reported via RTCSessionDescriptionDelegate.
 - (void)
     setRemoteDescriptionWithDelegate:(id<RTCSessionDescriptionDelegate>)delegate
                   sessionDescription:(RTCSessionDescription *)sdp;
+
+- (void)setRemoteSessionDescription:(RTCSessionDescription *)sdp
+                         completion:(void(^)(NSError *error))completion;
 
 // Restarts or updates the ICE Agent process of gathering local candidates
 // and pinging remote candidates.

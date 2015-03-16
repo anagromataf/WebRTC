@@ -32,6 +32,8 @@
 #import "RTCEnumConverter.h"
 #import "RTCMediaStreamTrack+Internal.h"
 
+NSString * const RTCMediaStreamTrackDidChangeStateNotification = @"RTCMediaStreamTrackDidChangeStateNotification";
+
 namespace webrtc {
 
 class RTCMediaStreamTrackObserver : public ObserverInterface {
@@ -40,6 +42,7 @@ class RTCMediaStreamTrackObserver : public ObserverInterface {
 
   void OnChanged() override {
     [_track.delegate mediaStreamTrackDidChange:_track];
+	[[NSNotificationCenter defaultCenter] postNotificationName:RTCMediaStreamTrackDidChangeStateNotification object:_track];
   }
 
  private:

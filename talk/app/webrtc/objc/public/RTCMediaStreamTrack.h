@@ -29,6 +29,8 @@
 
 #import "RTCTypes.h"
 
+extern NSString * const RTCMediaStreamTrackDidChangeStateNotification;
+
 @class RTCMediaStreamTrack;
 @protocol RTCMediaStreamTrackDelegate<NSObject>
 

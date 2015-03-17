@@ -38,6 +38,23 @@
 @protocol RTCSessionDescriptionDelegate;
 @protocol RTCStatsDelegate;
 
+extern NSString * const RTCPeerConnectionDidChangeSignalingStateNotification;
+extern NSString * const RTCPeerConnectionDidChangeICEConnectionStateNotification;
+extern NSString * const RTCPeerConnectionDidChangeICEGatheringStateNotification;
+
+extern NSString * const RTCPeerConnectionDidAddRemoteStreamNotification;
+extern NSString * const RTCPeerConnectionDidRemoveRemoteStreamNotification;
+
+extern NSString * const RTCPeerConnectionNeedsRenegotiationNotification;
+extern NSString * const RTCPeerConnectionGotICECandidateNotification;
+
+extern NSString * const RTCPeerConnectionSignalingStateKey;
+extern NSString * const RTCPeerConnectionICEConnectionStateKey;
+extern NSString * const RTCPeerConnectionICEGatheringStateKey;
+
+extern NSString * const RTCPeerConnectionRemoteStreamKey;
+extern NSString * const RTCPeerConnectionICECandidateKey;
+
 // RTCPeerConnection is an ObjectiveC friendly wrapper around a PeerConnection
 // object.  See the documentation in talk/app/webrtc/peerconnectioninterface.h.
 // or http://www.webrtc.org/reference/native-apis, which in turn is inspired by

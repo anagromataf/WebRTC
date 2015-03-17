@@ -47,6 +47,23 @@
 
 #include "talk/app/webrtc/jsep.h"
 
+NSString * const RTCPeerConnectionDidChangeSignalingStateNotification = @"RTCPeerConnectionDidChangeSignalingStateNotification";
+NSString * const RTCPeerConnectionDidChangeICEConnectionStateNotification = @"RTCPeerConnectionDidChangeICEConnectionStateNotification";
+NSString * const RTCPeerConnectionDidChangeICEGatheringStateNotification = @"RTCPeerConnectionDidChangeICEGatheringStateNotification";
+
+NSString * const RTCPeerConnectionDidAddRemoteStreamNotification = @"RTCPeerConnectionDidAddRemoteStreamNotification";
+NSString * const RTCPeerConnectionDidRemoveRemoteStreamNotification = @"RTCPeerConnectionDidRemoveRemoteStreamNotification";
+
+NSString * const RTCPeerConnectionNeedsRenegotiationNotification = @"RTCPeerConnectionNeedsRenegotiationNotification";
+NSString * const RTCPeerConnectionGotICECandidateNotification = @"RTCPeerConnectionGotICECandidateNotification";
+
+NSString * const RTCPeerConnectionSignalingStateKey = @"RTCPeerConnectionSignalingStateKey";
+NSString * const RTCPeerConnectionICEConnectionStateKey = @"RTCPeerConnectionICEConnectionStateKey";
+NSString * const RTCPeerConnectionICEGatheringStateKey = @"RTCPeerConnectionICEGatheringStateKey";
+
+NSString * const RTCPeerConnectionRemoteStreamKey = @"RTCPeerConnectionRemoteStreamKey";
+NSString * const RTCPeerConnectionICECandidateKey = @"RTCPeerConnectionICECandidateKey";
+
 NSString* const kRTCSessionDescriptionDelegateErrorDomain = @"RTCSDPError";
 int const kRTCSessionDescriptionDelegateErrorCode = -1;
 

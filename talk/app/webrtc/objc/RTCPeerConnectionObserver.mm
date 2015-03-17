@@ -52,6 +52,9 @@ void RTCPeerConnectionObserver::OnSignalingChange(
       [RTCEnumConverter convertSignalingStateToObjC:new_state];
   [_peerConnection.delegate peerConnection:_peerConnection
                      signalingStateChanged:state];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RTCPeerConnectionDidChangeSignalingStateNotification
+                                                      object:_peerConnection
+                                                    userInfo:@{RTCPeerConnectionSignalingStateKey: @(state)}];
 }
 
 void RTCPeerConnectionObserver::OnAddStream(MediaStreamInterface* stream) {
@@ -59,6 +62,9 @@ void RTCPeerConnectionObserver::OnAddStream(MediaStreamInterface* stream) {
       [[RTCMediaStream alloc] initWithMediaStream:stream];
   [_peerConnection.delegate peerConnection:_peerConnection
                                addedStream:mediaStream];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RTCPeerConnectionDidAddRemoteStreamNotification
+                                                      object:_peerConnection
+                                                    userInfo:@{RTCPeerConnectionRemoteStreamKey: mediaStream}];
 }
 
 void RTCPeerConnectionObserver::OnRemoveStream(MediaStreamInterface* stream) {
@@ -66,6 +72,9 @@ void RTCPeerConnectionObserver::OnRemoveStream(MediaStreamInterface* stream) {
       [[RTCMediaStream alloc] initWithMediaStream:stream];
   [_peerConnection.delegate peerConnection:_peerConnection
                              removedStream:mediaStream];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RTCPeerConnectionDidRemoveRemoteStreamNotification
+                                                      object:_peerConnection
+                                                    userInfo:@{RTCPeerConnectionRemoteStreamKey: mediaStream}];
 }
 
 void RTCPeerConnectionObserver::OnDataChannel(
@@ -79,6 +88,9 @@ void RTCPeerConnectionObserver::OnDataChannel(
 void RTCPeerConnectionObserver::OnRenegotiationNeeded() {
   id<RTCPeerConnectionDelegate> delegate = _peerConnection.delegate;
   [delegate peerConnectionOnRenegotiationNeeded:_peerConnection];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RTCPeerConnectionNeedsRenegotiationNotification
+                                                      object:_peerConnection
+                                                    userInfo:@{}];
 }
 
 void RTCPeerConnectionObserver::OnIceConnectionChange(
@@ -87,6 +99,9 @@ void RTCPeerConnectionObserver::OnIceConnectionChange(
       [RTCEnumConverter convertIceConnectionStateToObjC:new_state];
   [_peerConnection.delegate peerConnection:_peerConnection
                       iceConnectionChanged:state];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RTCPeerConnectionDidChangeICEConnectionStateNotification
+                                                      object:_peerConnection
+                                                    userInfo:@{RTCPeerConnectionICEConnectionStateKey: @(state)}];
 }
 
 void RTCPeerConnectionObserver::OnIceGatheringChange(
@@ -95,6 +110,9 @@ void RTCPeerConnectionObserver::OnIceGatheringChange(
       [RTCEnumConverter convertIceGatheringStateToObjC:new_state];
   [_peerConnection.delegate peerConnection:_peerConnection
                        iceGatheringChanged:state];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RTCPeerConnectionDidChangeICEGatheringStateNotification
+                                                      object:_peerConnection
+                                                    userInfo:@{RTCPeerConnectionICEConnectionStateKey: @(state)}];
 }
 
 void RTCPeerConnectionObserver::OnIceCandidate(
@@ -103,6 +121,9 @@ void RTCPeerConnectionObserver::OnIceCandidate(
       [[RTCICECandidate alloc] initWithCandidate:candidate];
   [_peerConnection.delegate peerConnection:_peerConnection
                            gotICECandidate:iceCandidate];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RTCPeerConnectionGotICECandidateNotification
+                                                      object:_peerConnection
+                                                    userInfo:@{RTCPeerConnectionICECandidateKey: iceCandidate}];
 }
 
 }  // namespace webrtc
